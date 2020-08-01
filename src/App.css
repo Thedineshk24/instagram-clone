@@ -6,9 +6,23 @@
   background-color: #fafafa;
 }
 
+
 .app__header{
   background-color: white;
   padding: 20px;
   border-bottom: 1px lightgrey;
   object-fit: contain;
 }
+
+.app_signUp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.i_text{
+  margin:5px;
+}
+
+
+ 
