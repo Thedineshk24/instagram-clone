@@ -3,6 +3,7 @@ import './App.css';
 import Post from './Post';
 import { db, auth } from './firebase';
 import { makeStyles, Modal, Button } from '@material-ui/core';
+import ImageUpload from './ImageUpload';
 
 
 function getModalStyle() {
@@ -33,6 +34,7 @@ function App() {
 
   const [posts, setPosts] = useState([])
   const [open, setOpen] = useState(false);
+  const [opensignin, setOpenSignIn] = useState(false);
 
   
   const [username, setUsername] = useState('');
@@ -73,16 +75,31 @@ function App() {
 
       auth.createUserWithEmailAndPassword(email,password)
       .then((authUser) => {
+        // var displayName = user.displayName; // for getting username
         return authUser.user.updateProfile({
           displayName : username
         })
       })
       .catch((e) => alert(e.message))
+
+      setOpen(false);
+
     }
 
-console.log(user)
+    const signIn = (event) => {
+      event.preventDefault();
+
+      auth.signInWithEmailAndPassword(email, password)
+      .catch ( (e) => alert(e.message))
+
+      setOpenSignIn(false); // to close pop window
+    }
+
+// console.log(user)
   return (
     <div className="App">
+
+
 
         <Modal
                 open={open}
@@ -131,6 +148,47 @@ console.log(user)
        
       </Modal>
 
+
+      <Modal
+                open={opensignin}
+                onClose={() => setOpenSignIn(false)}
+                
+        >
+
+                <div style={modalStyle} className={classes.paper}>
+                  <form className="app_signUp">
+                    <center>                  
+                      <img 
+                        className="app__headerImage"
+                        src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
+                        alt=""
+                      />
+                    </center>
+
+
+                      <input 
+                          className="i_text"
+                          placeholder="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                      />
+
+                      <input 
+                          className="i_text"
+                          placeholder="password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                      />
+
+                        <Button color="default" type="submit" onClick={signIn}> Sign In</Button>
+
+                  </form>
+                </div>
+       
+      </Modal>
+
       <div className="app__header">
             <img 
                       className="app__headerImage"
@@ -150,21 +208,25 @@ console.log(user)
 
             (
               <div className="app__loginContainer">
-                <Button onClick={() => setOpen(true)}> Sign In</Button>
+                <Button onClick={() => setOpenSignIn(true)}> Sign In</Button>
                 <Button onClick={() => setOpen(true)}> Sign Up</Button>
               </div>
             )
 
         }
 
+<ImageUpload />
 
       <h2>instagram</h2>
 
       {/* posts */}
       
+      
       {posts.map(({id , post}) => 
         <Post key={id} username={post.username} imageUrl={post.imageUrl} caption={post.caption} />
       )}
+      
+
       
     </div>
 
