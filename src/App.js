@@ -80,7 +80,7 @@ function App() {
       .catch((e) => alert(e.message))
     }
 
-
+console.log(user)
   return (
     <div className="App">
 
@@ -139,7 +139,24 @@ function App() {
             />
       </div>
 
-      <Button onClick={() => setOpen(true)}> Sign Up</Button>
+
+      {
+        user ? 
+            (      
+                <Button onClick={ () => auth.signOut()} > Logout </Button>
+            ) 
+
+            : 
+
+            (
+              <div className="app__loginContainer">
+                <Button onClick={() => setOpen(true)}> Sign In</Button>
+                <Button onClick={() => setOpen(true)}> Sign Up</Button>
+              </div>
+            )
+
+        }
+
 
       <h2>instagram</h2>
 
