@@ -4,7 +4,7 @@ import Post from './Post';
 import { db, auth } from './firebase';
 import { makeStyles, Modal, Button } from '@material-ui/core';
 import ImageUpload from './ImageUpload';
-
+import InstagramEmbed from 'react-instagram-embed';
 
 function getModalStyle() {
   const top = 50;
@@ -61,7 +61,7 @@ function App() {
   },[user,username]);
 
     useEffect(() => {
-      db.collection('posts').onSnapshot(snapshot => {
+      db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
         setPosts(snapshot.docs.map(doc => ({
           id : doc.id ,
           post:doc.data()
@@ -98,20 +98,6 @@ function App() {
 // console.log(user)
   return (
     <div className="App">
-
-          {
-          user?.displayName ? 
-            (
-                <ImageUpload username={user.displayName} />
-            ) 
-            :
-            (
-                <h3>you need to login first for uploading </h3>
-            )
-          }
-
-
-
 
         <Modal
                 open={open}
@@ -207,10 +193,8 @@ function App() {
                       src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
                       alt=""
             />
-      </div>
 
-
-      {
+        {
         user ? 
             (      
                 <Button onClick={ () => auth.signOut()} > Logout </Button>
@@ -228,15 +212,40 @@ function App() {
         }
 
 
-      <h2>instagram</h2>
+      </div>
+
 
       {/* posts */}
 
       
-      
-      {posts.map(({id , post}) => 
-        <Post key={id} username={post.username.username} imageUrl={post.imageUrl} caption={post.caption} />
-      )}
+      <div className="app__post">
+           <div className="app__postLeft">
+              {posts.map(({id , post}) => 
+                  <Post key={id} postId={id} user={user} username={post.username.username} imageUrl={post.imageUrl} caption={post.caption} />
+              )}
+           </div>
+
+
+           <div className="app__postRight">
+              <InstagramEmbed
+                // url='https://www.instagram.com/p/CCfM5fNhrTB/'
+                url='https://www.instagram.com/p/CBA2wwsBa9T/'
+                // url='https://www.instagram.com/p/CA9XujyhV5l/'
+                maxWidth={320}
+                hideCaption={false}
+                containerTagName='div'
+                protocol=''
+                injectScript
+                onLoading={() => {}}
+                onSuccess={() => {}}
+                onAfterRender={() => {}}
+                onFailure={() => {}}
+              />
+          </div>
+
+
+      </div>
+  
       
 
 {/* {console.log(JSON.stringify(posts)) ||
@@ -250,6 +259,20 @@ function App() {
      (<Post key={id} username={post[username]}  imageUrl={post[imageUrl]} caption={post[caption]} />))
 }
        */}
+
+
+       {/* {image upload} */}
+
+       {
+          user?.displayName ? 
+            (
+                <ImageUpload username={user.displayName} />
+            ) 
+            :
+            (
+                <h3>you need to login first for uploading </h3>
+            )
+          }
 
       
     </div>
