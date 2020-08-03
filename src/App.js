@@ -99,6 +99,18 @@ function App() {
   return (
     <div className="App">
 
+          {
+          user?.displayName ? 
+            (
+                <ImageUpload username={user.displayName} />
+            ) 
+            :
+            (
+                <h3>you need to login first for uploading </h3>
+            )
+          }
+
+
 
 
         <Modal
@@ -215,17 +227,29 @@ function App() {
 
         }
 
-<ImageUpload />
 
       <h2>instagram</h2>
 
       {/* posts */}
+
       
       
       {posts.map(({id , post}) => 
-        <Post key={id} username={post.username} imageUrl={post.imageUrl} caption={post.caption} />
+        <Post key={id} username={post.username.username} imageUrl={post.imageUrl} caption={post.caption} />
       )}
       
+
+{/* {console.log(JSON.stringify(posts)) ||
+ posts.map(({id , post}) => 
+        <Post key={id} username={JSON.stringify( post.username)} imageUrl={JSON.stringify( post.imageUrl)}
+         caption={JSON.stringify( post.caption)} />
+      )} */}
+
+{/* {
+    Object.keys(posts).map((id,post) =>
+     (<Post key={id} username={post[username]}  imageUrl={post[imageUrl]} caption={post[caption]} />))
+}
+       */}
 
       
     </div>
