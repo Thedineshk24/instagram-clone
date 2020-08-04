@@ -6,7 +6,7 @@ import firebase from 'firebase'
 
 function Post({ postId, user , username, caption, imageUrl}) {
     const [comments,setComments] = useState([]);
-    const [comment,setComment] = useState([]);
+    const [comment,setComment] = useState('');
 
 
     useEffect(() => {
@@ -19,7 +19,7 @@ function Post({ postId, user , username, caption, imageUrl}) {
             .collection("comments")
             .orderBy("timestamp","desc")
             .onSnapshot((snapshot) => {
-                setComments(snapshot.docs.map((doc) => doc.data))
+                setComments(snapshot.docs.map((doc) => doc.data()))
             });
         }
         return () => {
@@ -58,32 +58,34 @@ function Post({ postId, user , username, caption, imageUrl}) {
 
                 <div className="post__comments">
                     {
-                        comments.map((comment) => (
-                            <p>
+                        comments.map((comment,id) => (
+                            <p key={id}>
                                 <strong>{comment.username}</strong> {comment.text}
                             </p>
                         ))
                     }
                 </div>
 
-                <form className="post__commentBox">
-                    <input 
-                          className="post__input"
-                          placeholder="add a comment"
-                          type="text"
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                      />
+                {user && 
+                    <form className="post__commentBox">
+                        <input 
+                            className="post__input"
+                            placeholder="add a comment"
+                            type="text"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                        />
 
-                    <button
-                        disabled={!comment}
-                        className="post__button"
-                        type="submit"
-                        onClick={postComment}
-                    >
-                        Post
-                    </button>
-                </form>
+                        <button
+                            disabled={!comment}
+                            className="post__button"
+                            type="submit"
+                            onClick={postComment}
+                        >
+                            Post
+                        </button>
+                    </form>
+                }
 
 
         </div>
